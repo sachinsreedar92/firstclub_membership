@@ -11,7 +11,7 @@ public record TierBenefitResponse(
         BenefitType type,
         String code,
         BigDecimal numericValue,
-        String configJson,
+        //String configJson,
         boolean active) {
 
     public static TierBenefitResponse from(TierBenefit tb) {
@@ -22,7 +22,7 @@ public record TierBenefitResponse(
                 tb.getBenefitDefinition().getType(),
                 tb.getBenefitDefinition().getCode(),
                 tb.getNumericValue(),
-                tb.getConfigJson(),
+               // tb.getConfigJson(),
                 tb.isActive());
     }
 }

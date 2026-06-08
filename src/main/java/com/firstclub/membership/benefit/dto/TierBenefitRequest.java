@@ -17,8 +17,8 @@ public record TierBenefitRequest(
         @DecimalMax(value = "100.00", message = "numericValue must not exceed 100")
         BigDecimal numericValue,
 
-        @Size(max = 1024, message = "configJson must not exceed 1024 characters")
-        String configJson,
+      /*  @Size(max = 1024, message = "configJson must not exceed 1024 characters")
+        String configJson,*/
 
         Boolean active) {
 }

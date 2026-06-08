@@ -110,7 +110,8 @@ public class BenefitServiceImpl implements BenefitService {
                 tier,
                 def,
                 request.numericValue(),
-                request.configJson(),
+                //request.configJson(),
+                null,
                 request.active() == null || request.active());
         TierBenefit saved = tierBenefitRepository.save(tierBenefit);
         log.info("Benefit assigned to tier successfully - tierBenefitId={}, tierId={}, benefitId={}",

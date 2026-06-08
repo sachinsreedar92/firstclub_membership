@@ -8,11 +8,7 @@ spring:
     virtual:
       enabled: true
   datasource:
-    # File-based H2: data survives application restarts.
-    # AUTO_SERVER=TRUE lets H2 upgrade to an embedded TCP server automatically when a second
-    # process (e.g. IntelliJ run + Gradle bootRun simultaneously) tries to open the same file.
-    # Delete ./data/ to start fresh after schema changes.
-    url: jdbc:h2:file:./data/membership;AUTO_SERVER=TRUE
+    url: jdbc:h2:mem:membership;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sa
     password: ""

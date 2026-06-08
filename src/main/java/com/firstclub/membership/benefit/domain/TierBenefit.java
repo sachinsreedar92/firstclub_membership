@@ -34,8 +34,8 @@ public class TierBenefit extends BaseEntity {
     private BigDecimal numericValue;
 
     /** Free-form JSON for richer perk configuration without a schema change. */
-    @Column(length = 1024)
-    private String configJson;
+    /*@Column(length = 1024)
+    private String configJson;*/
 
     @Column(nullable = false)
     private boolean active = true;
@@ -48,7 +48,7 @@ public class TierBenefit extends BaseEntity {
         this.tier = tier;
         this.benefitDefinition = benefitDefinition;
         this.numericValue = numericValue;
-        this.configJson = configJson;
+        //this.configJson = configJson;
         this.active = active;
     }
 
@@ -76,13 +76,15 @@ public class TierBenefit extends BaseEntity {
         this.numericValue = numericValue;
     }
 
-    public String getConfigJson() {
+    /*public String getConfigJson() {
         return configJson;
-    }
+    }*/
 
+/*
     public void setConfigJson(String configJson) {
         this.configJson = configJson;
     }
+*/
 
     public boolean isActive() {
         return active;

@@ -1,5 +1,5 @@
 server:
-  port: 3030 # Change this to your desired port
+  port: 8080 # Change this to your desired port
 
 spring:
   application:

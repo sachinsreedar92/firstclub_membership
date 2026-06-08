@@ -1,0 +1,103 @@
+server:
+  port: 3030 # Change this to your desired port
+
+spring:
+  application:
+    name: membership-program
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    # File-based H2: data survives application restarts.
+    # AUTO_SERVER=TRUE lets H2 upgrade to an embedded TCP server automatically when a second
+    # process (e.g. IntelliJ run + Gradle bootRun simultaneously) tries to open the same file.
+    # Delete ./data/ to start fresh after schema changes.
+    url: jdbc:h2:file:./data/membership;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 50
+  cache:
+    type: caffeine
+
+# Application-specific cache + tier configuration (externalized for extensibility)
+membership:
+  cache:
+    spec: "maximumSize=10000,expireAfterWrite=10m,recordStats"
+  async:
+    queue-capacity: 1000
+
+# Resilience4j defaults applied to membership write/read paths
+resilience4j:
+  ratelimiter:
+    instances:
+      subscriptionWrite:
+        limit-for-period: 50
+        limit-refresh-period: 1s
+        timeout-duration: 200ms
+      catalogRead:
+        limit-for-period: 500
+        limit-refresh-period: 1s
+        timeout-duration: 50ms
+  bulkhead:
+    instances:
+      subscriptionWrite:
+        max-concurrent-calls: 64
+        max-wait-duration: 100ms
+  circuitbreaker:
+    instances:
+      tierEvaluation:
+        # Count-based sliding window: evaluates failure rate over the last 50 calls
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 50
+        # Minimum calls required before computing failure rate (avoids false trips on small samples)
+        minimum-number-of-calls: 20
+        # If 60% or more of calls in the window fail, trip the circuit
+        failure-rate-threshold: 60
+        # How long the circuit stays OPEN before attempting recovery (HALF_OPEN)
+        wait-duration-in-open-state: 10s
+        # Number of calls permitted in HALF_OPEN to test backend health
+        permitted-number-of-calls-in-half-open-state: 5
+        # Optionally treat calls slower than 2s as failures (helps catch degraded backends)
+        # slow-call-duration-threshold: 2s
+        # slow-call-rate-threshold: 50
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus, caches, loggers
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: membership-program
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+
+logging:
+  # Human-readable console with correlation id; structured ECS JSON written to a log file.
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [traceId=%X{traceId:-}] %-5level %logger{36} - %msg%n"
+  structured:
+    format:
+      file: ecs
+  file:
+    name: logs/membership.json
+  level:
+    com.firstclub.membership: INFO

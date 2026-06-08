@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:membership-test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+  cache:
+    type: caffeine
+
+membership:
+  cache:
+    spec: "maximumSize=1000,expireAfterWrite=10m"
+
+logging:
+  level:
+    com.firstclub.membership: WARN
+    org.hibernate: WARN
